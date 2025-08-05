@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Happy Birthday, Valechka</title>
+<link rel="stylesheet" href="./file/style.css" />
+<script src="./file/jquery.min.js"></script>
+</head>
+<body>
+
+<!-- Overlay Start -->
+<div id="start-overlay">
+<button id="start-button">Click to Begin</button>
+</div>
+
+<!-- Musik -->
+<audio id="myAudio" loop>
+<source src="aud.mp3" type="audio/mp3" />
+</audio>
+
+<!-- Canvas Bintang -->
+<canvas id="star-canvas"></canvas>
+
+<!-- Container efek -->
+<div id="effects-container"></div>
+
+<!-- Puisi -->
+<div class="text-container" id="poem" style="display: none;">
+<p class="line">Somewhere far from me</p>
+<p class="line">in a city where the wind speaks Russian</p>
+<p class="line">a girl was born on this very day</p>
+<p class="line">and the sky has remembered ever since</p>
+<br />
+<p class="line">Every August 6th</p>
+<p class="line">the stars arrange themselves a little sweeter</p>
+<p class="line">as if to honor you</p>
+<p class="line">as if they, too, wait for the day</p>
+<p class="line">we walk together beneath them</p>
+<br />
+<p class="line">We may be apart</p>
+<p class="line">me here in Bogor, you there in Chelyabinsk</p>
+<p class="line">but tonight, we’re under the same sky</p>
+<p class="line">and I send you all my love with the stars</p>
+<br />
+<p class="line"><strong>Happy birthday Valechka!!🥳🎉</strong></p>
+<p class="line">I hope your heart feels light❤️🌟</p>
+<p class="line">your laugh feels free☺️🚀</p>
+<p class="line">and your dreams feel closer than ever🤗✨</p>
+</div>
+
+<script>
+document.getElementById("start-button").addEventListener("click", function () {
+document.getElementById("start-overlay").style.display = "none";
+document.getElementById("myAudio").play();
+document.getElementById("poem").style.display = "block";
+showTextLines();
+});
+
+function showTextLines() {
+const lines = document.querySelectorAll(".line");
+let i = 0;
+function revealLine() {
+if (i < lines.length) {
+lines[i].style.opacity = "1";
+lines[i].style.transform = "translateY(0)";
+i++;
+setTimeout(revealLine, 2300);
+} else {
+showHeartAndFireworks();
+}
+}
+revealLine();
+}
+
+function showHeartAndFireworks() {
+const container = document.getElementById("effects-container");
+
+// ❤️ Heart
+const heart = document.createElement("div");
+heart.className = "heart-shape";
+container.appendChild(heart);
+
+// 🎆 Fireworks
+for (let i = 0; i < 20; i++) {
+const firework = document.createElement("div");
+firework.className = "firework";
+
+const x = Math.random() * 400 - 200;
+const y = Math.random() * 400 - 200;
+
+firework.style.left = "50vw";
+firework.style.top = "50vh";
+firework.style.setProperty('--x', x.toFixed(1));
+firework.style.setProperty('--y', y.toFixed(1));
+firework.style.backgroundColor = randomColor();
+
+container.appendChild(firework);
+}
+}
+
+function randomColor() {
+const colors = ['red', 'orange', 'yellow', 'white', 'pink', 'cyan', 'lime'];
+return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// Bintang jatuh
+const canvas = document.getElementById("star-canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let stars = [];
+for (let i = 0; i < 150; i++) {
+stars.push({
+x: Math.random() * canvas.width,
+y: Math.random() * canvas.height,
+r: Math.random() * 1.2,
+d: Math.random() * 1
+});
+}
+
+let shootingStars = [];
+
+function drawStars() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+ctx.fillStyle = "white";
+for (let i = 0; i < stars.length; i++) {
+let s = stars[i];
+ctx.beginPath();
+ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2, true);
+ctx.fill();
+}
+
+shootingStars.forEach((s, index) => {
+ctx.beginPath();
+ctx.moveTo(s.x, s.y);
+ctx.lineTo(s.x + 15, s.y + 15);
+ctx.strokeStyle = "white";
+ctx.lineWidth = 2;
+ctx.stroke();
+
+s.x += s.vx;
+s.y += s.vy;
+
+if (s.x > canvas.width || s.y > canvas.height) {
+shootingStars.splice(index, 1);
+}
+});
+
+if (Math.random() < 0.02) {
+shootingStars.push({
+x: Math.random() * canvas.width,
+y: 0,
+vx: 8 + Math.random() * 3,
+vy: 8 + Math.random() * 3,
+});
+}
+
+requestAnimationFrame(drawStars);
+}
+drawStars();
+</script>
+</body>
+</html>
